@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QA Daily Update</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+  <div class="bg-grid"></div>
+
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="logo-text"><span class="logo-name">QA Update</span><span class="logo-sub">Daily Reporter</span></div>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="nav-item active" href="#" data-section="today"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="nav-label">Today's update</span><span class="nav-indicator"></span></a>
+        <a class="nav-item" href="#" data-section="history"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span class="nav-label">History</span></a>
+        <a class="nav-item" href="#" data-section="settings"><span class="nav-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></span><span class="nav-label">Settings</span></a>
+      </nav>
+      <div class="sidebar-footer"><div class="conn-status" id="sidebar-conn"><span class="conn-dot disconnected" id="conn-dot"></span><span class="conn-label" id="sidebar-conn-text">Not connected</span></div></div>
+    </aside>
+
+    <main class="main">
+      <section id="section-today" class="section active">
+        <div class="page-header">
+          <div class="page-header-left">
+            <h1 class="page-title" id="page-title">Today's QA update</h1>
+            <p class="page-date" id="page-date"></p>
+          </div>
+          <div class="page-header-right">
+            <span class="due-badge" id="due-badge">Due at 6:00 PM</span>
+            <div class="date-wrap"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><input type="date" id="fetch-date" class="date-input" onchange="onDateChange()" /><button class="btn-today" onclick="resetToToday()" id="today-btn" style="display:none;">Today</button></div>
+            <button class="btn-fetch" id="fetch-btn" onclick="fetchAll()" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg><span>Fetch from Jira</span></button>
+          </div>
+        </div>
+
+        <div class="conn-bar" id="conn-bar">
+          <div class="conn-bar-inner disconnected" id="conn-bar-inner"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span id="conn-bar-text">Not connected — go to <strong>Settings</strong> to add your PAT token</span><button class="btn-sm" onclick="goSettings()">Open settings</button></div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card" style="--delay:0.05s"><div class="metric-glow"></div><div class="metric-label">Cases reopened</div><div class="metric-value danger" id="m-reopen">—</div><div class="metric-sub" id="m-reopen-sub">waiting</div><div class="metric-bar"><div class="metric-bar-fill danger" id="m-reopen-bar" style="width:0%"></div></div></div>
+          <div class="metric-card" style="--delay:0.1s"><div class="metric-glow success"></div><div class="metric-label">Pushed to customer</div><div class="metric-value success" id="m-pushed">—</div><div class="metric-sub" id="m-pushed-sub">waiting</div><div class="metric-bar"><div class="metric-bar-fill success" id="m-pushed-bar" style="width:0%"></div></div></div>
+          <div class="metric-card" style="--delay:0.15s"><div class="metric-glow neutral"></div><div class="metric-label">Total reviewed</div><div class="metric-value neutral" id="m-total">—</div><div class="metric-sub">today</div><div class="metric-bar"><div class="metric-bar-fill neutral" id="m-total-bar" style="width:0%"></div></div></div>
+        </div>
+
+        <div class="form-card">
+          <div class="form-card-header"><div class="form-card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Teams — QA daily update</div><div class="form-card-viewers">Viewers: Prashantha M N, Santhosh Damle, Vinay M T</div></div>
+          <div class="form-body">
+            <div class="field-group" style="--delay:0.05s"><label class="field-label">Key updates <span class="req">*</span></label><div class="field-row"><textarea id="f-key" class="field-textarea" rows="3" placeholder="Auto-generated after fetch…"></textarea><button class="copy-btn" onclick="copyField('f-key',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div></div>
+            <div class="field-group" style="--delay:0.1s"><label class="field-label success-label">Cases pushed to customer or closed <span class="req">*</span></label><div class="field-row"><div class="field-readonly" id="f-pushed"><span class="field-empty">Fetch from Jira to populate…</span></div><button class="copy-btn" onclick="copyDiv('f-pushed',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div></div>
+            <div class="field-group" style="--delay:0.13s"><label class="field-label">Count — cases pushed <span class="req">*</span></label><div class="field-row"><div class="field-readonly single" id="f-pushed-cnt"><span class="field-empty">—</span></div><button class="copy-btn" onclick="copyDiv('f-pushed-cnt',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div></div>
+            <div class="field-group" style="--delay:0.16s"><label class="field-label danger-label">Cases reopened <span class="req">*</span></label><div class="field-row"><div class="field-readonly" id="f-reopen"><span class="field-empty">Fetch from Jira to populate…</span></div><button class="copy-btn" onclick="copyDiv('f-reopen',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div></div>
+            <div class="field-group" style="--delay:0.19s"><label class="field-label">Count — cases reopened <span class="req">*</span></label><div class="field-row"><div class="field-readonly single" id="f-reopen-cnt"><span class="field-empty">—</span></div><button class="copy-btn" onclick="copyDiv('f-reopen-cnt',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div></div>
+            <div class="field-group" style="--delay:0.22s"><label class="field-label">Plans for tomorrow <span class="req">*</span></label><div class="field-row"><textarea id="f-plans" class="field-textarea" rows="2" placeholder="What are you planning to work on tomorrow?"></textarea><button class="copy-btn" onclick="copyField('f-plans',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div></div>
+            <div class="field-group" style="--delay:0.25s"><label class="field-label">Do you need any support? <span class="req">*</span></label><div class="radio-group"><label class="radio-label"><input type="radio" name="support" value="yes" onchange="toggleSupport(true)"><span>Yes</span></label><label class="radio-label"><input type="radio" name="support" value="no" onchange="toggleSupport(false)" checked><span>No</span></label></div><div id="support-detail" class="support-detail hidden"><label class="field-label" style="margin-top:14px;">If yes, additional details</label><div class="field-row"><textarea id="f-support" class="field-textarea" rows="2" placeholder="Describe the support needed…"></textarea><button class="copy-btn" onclick="copyField('f-support',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy</span></button></div></div></div>
+          </div>
+        </div>
+
+        <a href="https://teams.microsoft.com" target="_blank" class="btn-teams"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Open Microsoft Teams</a>
+      </section>
+
+      <section id="section-history" class="section">
+        <div class="page-header"><div class="page-header-left"><h1 class="page-title">History</h1><p class="page-date">Past QA daily updates</p></div></div>
+        <div class="empty-state" id="history-empty"><div class="empty-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><p>No history yet. Submissions saved automatically after fetching.</p></div>
+        <div id="history-list"></div>
+      </section>
+
+      <section id="section-settings" class="section">
+        <div class="page-header"><div class="page-header-left"><h1 class="page-title">Settings</h1><p class="page-date">Configure your Jira connection</p></div></div>
+        <div class="settings-card">
+          <div class="settings-section-title">Jira connection</div>
+          <div class="settings-field"><label class="settings-label">Jira base URL</label><input type="text" id="s-jira-url" class="settings-input" value="https://jdac.unilogcorp.com" /></div>
+          <div class="settings-field"><label class="settings-label">Cloudflare Worker Proxy URL <span class="label-tag">required for GitHub Pages</span></label><input type="text" id="s-proxy-url" class="settings-input" placeholder="https://qa-jira-proxy.YOUR_NAME.workers.dev" /><p class="settings-hint">Leave blank when running on localhost.</p></div>
+          <div class="settings-field"><label class="settings-label">Personal Access Token (PAT)</label><div class="pat-row"><input type="password" id="s-pat" class="settings-input" placeholder="Paste your Jira PAT token…" autocomplete="off" /><button class="btn-connect" onclick="connectPAT()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>Connect</button></div><p class="settings-hint">Stored only in your browser's localStorage. Never sent anywhere else.</p></div>
+          <div class="conn-result" id="conn-result"></div>
+          <div id="connected-user-row" style="display:none;"><div class="connected-card"><div class="connected-avatar" id="conn-avatar">GL</div><div class="connected-info"><div class="connected-name" id="conn-name"></div><div class="connected-email" id="conn-email"></div></div><button class="btn-disconnect" onclick="disconnectPAT()">Disconnect</button></div></div>
+        </div>
+        <div class="settings-card">
+          <div class="settings-section-title">JQL Queries</div>
+          <div class="settings-field"><label class="settings-label">Reopened cases (sent back to dev)</label><textarea class="settings-input jql-input" id="s-jql-reopen" rows="3">(status CHANGED FROM "QA STAGE" TO ("DEV STAGE","DEV QUEUE","BACKLOG") BY currentUser() AFTER startOfDay() OR status CHANGED FROM "QA PRODUCTION" TO ("DEV PRODUCTION","DEV STAGE") BY currentUser() AFTER startOfDay()) ORDER BY updated DESC</textarea></div>
+          <div class="settings-field"><label class="settings-label">Pushed to customer (moved to approval)</label><textarea class="settings-input jql-input" id="s-jql-pushed" rows="3">(status CHANGED FROM "QA STAGE" TO "APPROVAL STAGE" BY currentUser() AFTER startOfDay() OR status CHANGED FROM "QA PRODUCTION" TO "APPROVAL PRODUCTION" BY currentUser() AFTER startOfDay()) ORDER BY updated DESC</textarea></div>
+          <button class="btn-save" onclick="saveSettings()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Save settings</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>
